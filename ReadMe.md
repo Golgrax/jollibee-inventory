@@ -155,6 +155,3 @@ Contributions are welcome! Please fork the repository and submit pull requests f
 
 This project is licensed under the [MIT License](https://github.com/Golgrax/jollibee-inventory/blob/main/LICENSE).
 
----
-
-This updated `README.md` reflects the transition from a single-file application to a modular structure in the `/sf/` folder, providing detailed instructions and an overview of the system's enhanced capabilities. Let me know if you need further refinements!
