@@ -5,7 +5,7 @@ from functools import wraps
 import json
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'
+app.secret_key = 'BSIT2-2GROUP10' # CAUTION!!! I changed the default, what if we used ENV instead para maging more secured.
 
 DB_CONFIG = {
     'user': 'test',
