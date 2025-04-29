@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Edit Product{% endblock %}
+{% block content %}
+<h2 class="text-2xl font-bold mb-6">Edit Product</h2>
+<form method="POST" class="max-w-md">
+    <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2">Name</label>
+        <input type="text" name="name" value="{{ product[1] }}" class="w-full p-2 border border-gray-300 rounded" required>
+    </div>
+    <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2">Category</label>
+        <select name="category" class="w-full p-2 border border-gray-300 rounded">
+            <option value="None" {% if not product[2] %}selected{% endif %}>None</option>
+            {% for cat in categories %}
+            <option value="{{ cat[0] }}" {% if product[2] == cat[0] %}selected{% endif %}>{{ cat[1] }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2">Stock</label>
+        <input type="number" name="stock" value="{{ product[3] }}" class="w-full p-2 border border-gray-300 rounded" required>
+    </div>
+    <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2">Price</label>
+        <input type="number" name="price" value="{{ product[4] }}" class="w-full p-2 border border-gray-300 rounded" step="0.01" required>
+    </div>
+    <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Update Product</button>
+</form>
+{% endblock %}

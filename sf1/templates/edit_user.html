@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Edit User{% endblock %}
+{% block content %}
+<h2 class="text-2xl font-bold mb-6">Edit User</h2>
+<form method="POST" class="max-w-md">
+    <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2">Username</label>
+        <input type="text" name="username" value="{{ user[1] }}" class="w-full p-2 border border-gray-300 rounded" required>
+    </div>
+    <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2">New Password (optional)</label>
+        <input type="password" name="password" class="w-full p-2 border border-gray-300 rounded">
+    </div>
+    <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2">Role</label>
+        <select name="role" class="w-full p-2 border border-gray-300 rounded">
+            <option value="user" {% if user[2] == 'user' %}selected{% endif %}>User</option>
+            <option value="admin" {% if user[2] == 'admin' %}selected{% endif %}>Admin</option>
+        </select>
+    </div>
+    <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Update User</button>
+</form>
+{% endblock %}

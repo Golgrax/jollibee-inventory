@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Activity Log{% endblock %}
+{% block content %}
+<h2 class="text-2xl font-bold mb-6">Activity Log</h2>
+<div class="bg-white rounded-lg shadow-md">
+    <div class="p-4">
+        <table class="min-w-full">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="py-2 px-3 text-left">Timestamp</th>
+                    <th class="py-2 px-3 text-left">User</th>
+                    <th class="py-2 px-3 text-left">Action</th>
+                    <th class="py-2 px-3 text-left">Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr class="border-b border-gray-200">
+                    <td class="py-2 px-3">{{ log[0] }}</td>
+                    <td class="py-2 px-3">{{ log[1] }}</td>
+                    <td class="py-2 px-3">{{ log[2] }}</td>
+                    <td class="py-2 px-3">{{ log[3] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

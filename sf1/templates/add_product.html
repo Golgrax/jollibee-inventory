@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Add Product{% endblock %}
+{% block content %}
+<h2 class="text-2xl font-bold mb-6">Add Product</h2>
+<form method="POST" class="max-w-md">
+    <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2">Name</label>
+        <input type="text" name="name" class="w-full p-2 border border-gray-300 rounded" required>
+    </div>
+    <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2">Category</label>
+        <select name="category" class="w-full p-2 border border-gray-300 rounded">
+            <option value="None">None</option>
+            {% for cat in categories %}
+            <option value="{{ cat[0] }}">{{ cat[1] }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2">Stock</label>
+        <input type="number" name="stock" class="w-full p-2 border border-gray-300 rounded" required>
+    </div>
+    <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2">Price</label>
+        <input type="number" name="price" class="w-full p-2 border border-gray-300 rounded" step="0.01" required>
+    </div>
+    <button type="submit" class="bg-green-500 text-white p-2 rounded hover:bg-green-600">Add Product</button>
+</form>
+{% endblock %}

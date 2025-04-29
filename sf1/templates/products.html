@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Products{% endblock %}
+{% block content %}
+<h2 class="text-2xl font-bold mb-6">Products</h2>
+<form method="GET" class="mb-6 flex space-x-4">
+    <div>
+        <label class="block text-gray-700 text-sm font-bold mb-2">Category</label>
+        <select name="category" class="p-2 border border-gray-300 rounded">
+            <option value="All" {% if selected_category == 'All' %}selected{% endif %}>All</option>
+            {% for cat in categories %}
+            <option value="{{ cat[0] }}" {% if selected_category == cat[0]|string %}selected{% endif %}>{{ cat[1] }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <label class="block text-gray-700 text-sm font-bold mb-2">Search</label>
+        <input type="text" name="search" value="{{ search_term }}" class="p-2 border border-gray-300 rounded">
+    </div>
+    <div>
+        <label class="block text-gray-700 text-sm font-bold mb-2">Min Price</label>
+        <input type="number" name="min_price" value="{{ min_price }}" class="p-2 border border-gray-300 rounded" step="0.01">
+    </div>
+    <div>
+        <label class="block text-gray-700 text-sm font-bold mb-2">Max Price</label>
+        <input type="number" name="max_price" value="{{ max_price }}" class="p-2 border border-gray-300 rounded" step="0.01">
+    </div>
+    <div class="flex items-end">
+        <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Search</button>
+    </div>
+</form>
+<div class="bg-white rounded-lg shadow-md">
+    <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+        <h3 class="font-bold">Product List</h3>
+        {% if is_admin %}
+        <a href="{{ url_for('add_product') }}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Add Product</a>
+        {% endif %}
+    </div>
+    <div class="p-4">
+        <table class="min-w-full">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="py-2 px-3 text-left">ID</th>
+                    <th class="py-2 px-3 text-left">Product Name</th>
+                    <th class="py-2 px-3 text-left">Category</th>
+                    <th class="py-2 px-3 text-left">Stock</th>
+                    <th class="py-2 px-3 text-left">Price</th>
+                    {% if is_admin %}
+                    <th class="py-2 px-3 text-left">Actions</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr class="border-b border-gray-200">
+                    <td class="py-2 px-3">{{ product[0] }}</td>
+                    <td class="py-2 px-3">{{ product[1] }}</td>
+                    <td class="py-2 px-3">{{ product[2] or 'None' }}</td>
+                    <td class="py-2 px-3">{{ product[3] }}</td>
+                    <td class="py-2 px-3">₱{{ product[4] | round(2) }}</td>
+                    {% if is_admin %}
+                    <td class="py-2 px-3">
+                        <a href="{{ url_for('edit_product', id=product[0]) }}" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></a>
+                        <a href="{{ url_for('delete_product', id=product[0]) }}" class="text-red-600" onclick="return confirm('Are you sure?')"><i class="fas fa-trash"></i></a>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
