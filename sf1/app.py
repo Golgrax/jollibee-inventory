@@ -5,7 +5,7 @@ from functools import wraps
 import json
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'  # Replace with a secure key
+app.secret_key = 'your_secret_key_here'
 
 DB_CONFIG = {
     'user': 'test',
@@ -14,6 +14,17 @@ DB_CONFIG = {
     'database': 'jollibee_inventory',
     'ssl_disabled': True
 }
+
+
+
+@app.route('/')
+def index():
+    if 'user_id' in session:
+        return redirect(url_for('dashboard'))
+    else:
+        return redirect(url_for('login'))
+
+
 
 def connect_db():
     try:
@@ -172,13 +183,13 @@ def products():
     category = request.args.get('category', 'All')
     search_term = request.args.get('search', '')
     min_price = request.args.get('min_price', '0')
-    max_price = request.args.get('max_price', '9999999')
+    max_price = request.args.get('max_price', '0')
     try:
         min_price = float(min_price)
         max_price = float(max_price)
     except ValueError:
         min_price = 0
-        max_price = 9999999
+        max_price = 0
 
     query = """
         SELECT p.id, p.name, c.name, p.stock, p.price
