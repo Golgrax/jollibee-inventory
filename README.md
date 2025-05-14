@@ -280,4 +280,4 @@ Contributions are welcome! Please fork the repository and submit pull requests f
 
 ## License
 
-This project is typically licensed under an open-source license like MIT. Please include a `LICENSE` file if you have one.
+This project is typically licensed under an open-source license like MIT. Please include a `LICENSE` file if you have one. Yes, we have now
