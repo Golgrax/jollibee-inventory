@@ -278,6 +278,10 @@ The `ssl_disabled: True` is important if you haven't configured SSL for your MyS
 
 Contributions are welcome! Please fork the repository and submit pull requests for enhancements or bug fixes.
 
+
 ## License
 
-This project is typically licensed under an open-source license like MIT. Please include a `LICENSE` file if you have one. Yes, we have now
+This project is licensed under the MIT License.
+
+You can find the full text of the license here:
+[https://github.com/Golgrax/jollibee-inventory/blob/main/LICENSE](https://github.com/Golgrax/jollibee-inventory/blob/main/LICENSE)
