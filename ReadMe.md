@@ -1,16 +1,14 @@
-# Jollibee Inventory Management System
+# Jollibee Inventory Management System (Flask Web Application)
 
-This is a comprehensive inventory management system designed for Jollibee, built with **Python**, **Tkinter** for the graphical user interface, and **MySQL** for data storage. The system includes **user authentication** with sign-up and login, **role-based access control** (admin and user roles), and a wide range of inventory management features. 
-
-> **Note**: The project has been refactored from a single-file structure into a modular design with multiple files, now located in the `/sf/` folder, to improve organization and scalability.
+This is a web-based inventory management system designed for Jollibee, built with **Python**, **Flask** for the web framework, and **MySQL** for data storage. The system includes **user authentication** with sign-up and login, **role-based access control** (admin and user roles), and a range of inventory management features.
 
 ## Features
 
 - **User Authentication**:
-  - Secure sign-up and login with password hashing (SHA-256).
+  - Secure sign-up and login with password hashing (`werkzeug.security`).
   - Role-based access:
-    - **Admin**: Full access to manage products, categories, users, and generate reports.
-    - **User**: Limited access to view products and reports.
+    - **Admin**: Full access to manage products, categories, users, view activity logs, and perform backups.
+    - **User**: Access to view products, dashboard, and manage their own settings (e.g., change password).
 
 - **Inventory Management**:
   - Add, modify, and remove products with details like name, category, stock, and price.
@@ -21,131 +19,260 @@ This is a comprehensive inventory management system designed for Jollibee, built
   - Displays key metrics such as total products, categories, low stock items, and total users.
   - Shows a list of recently added products.
 
-- **Reports**:
-  - Generate reports including low stock, high stock, most expensive, least expensive products, and category summaries.
-  - Export reports as text for further use.
-
 - **Activity Log**:
-  - Tracks user actions (e.g., adding products, modifying users) for auditing purposes.
+  - Tracks user actions (e.g., login, signup, adding products, modifying users) for auditing purposes.
 
 - **Settings**:
-  - Change password, backup and restore the database, and switch between light/dark themes.
+  - Users can change their password.
+  - Admins can initiate a database backup (to a JSON file).
 
-- **Notifications**:
-  - Alerts for low stock (<10 units) and high stock (>100 units) levels.
+## Prerequisites
 
-## Requirements
+- **Python 3.7+**
+- **Git** (for cloning the repository)
+- **MySQL Server** (Version 5.7+ or 8.0+ recommended)
+- **MySQL Workbench** (Recommended for easier database management, but optional)
+- A Web Browser
 
-- **Python 3.7+** (Tested up to Python 3.12)
-- **Tkinter** (typically included with Python)
-- **MySQL Server** (e.g., MySQL 8+)
-- **mysql-connector-python** library
+## Setup Instructions
 
-## Installation
+Follow these steps to set up and run the application:
 
-1. **Clone or Download** this repository:
-   ```bash
-   git clone https://github.com/golgrax/jollibee-inventory.git
-   cd jollibee-inventory
-   ```
+### 1. MySQL Database and User Setup
 
-2. **Create and Activate a Virtual Environment** (recommended):
-   ```bash
-   python3 -m venv myenv
-   source myenv/bin/activate  # On Windows: myenv\Scripts\activate
-   ```
+Your Flask application needs a dedicated MySQL database and user. You can set this up using the MySQL command line or MySQL Workbench.
 
-3. **Install Dependencies**:
-   ```bash
-   pip install --upgrade mysql-connector-python
-   ```
+**Your application expects the following database configuration (defined in `app.py`):**
+-   **User:** `test`
+-   **Password:** `Test1234!`
+-   **Host:** `localhost`
+-   **Database Name:** `jollibee_inventory`
 
-## MySQL Setup
+**Method A: Using MySQL Command Line**
 
-1. **Install MySQL Server** (if not already installed):
-   ```bash
-   sudo apt-get update
-   sudo apt-get install mysql-server
-   ```
+   a.  **Install MySQL Server:**
+        *   **Linux (Debian/Ubuntu):**
+            ```bash
+            sudo apt update
+            sudo apt install mysql-server
+            sudo systemctl start mysql
+            sudo systemctl enable mysql
+            ```
+            You might need to run `sudo mysql_secure_installation` for initial setup.
+        *   **Windows:** Download the MySQL Installer from the [official MySQL website](https://dev.mysql.com/downloads/installer/) and follow the installation instructions. Ensure the MySQL Server is added to your system's PATH or use the MySQL Command Line Client installed with it.
+        *   **macOS:** You can use Homebrew: `brew install mysql` and `brew services start mysql`.
 
-2. **Create Database and User**:
-   - Log in to MySQL as root:
-     ```bash
-     sudo mysql
-     ```
-   - Create the database:
-     ```sql
-     CREATE DATABASE jollibee_inventory;
-     ```
-   - Create a user and grant privileges:
-     ```sql
-     CREATE USER 'test'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Test1234!';
-     GRANT ALL PRIVILEGES ON jollibee_inventory.* TO 'test'@'localhost';
-     FLUSH PRIVILEGES;
-     ```
+   b.  **Connect to MySQL as an administrative user (e.g., root):**
+        *   **Linux/macOS:**
+            ```bash
+            sudo mysql
+            # Or if you have a root password set:
+            # mysql -u root -p
+            ```
+        *   **Windows:** Open the MySQL Command Line Client or PowerShell/CMD and type:
+            ```bash
+            mysql -u root -p
+            ```
+            (Enter your MySQL root password when prompted).
 
-3. **Verify Configuration**:
-   - The default database configuration is in `sf/database.py`:
-     ```python
-     DB_CONFIG = {
-         'user': 'test',
-         'password': 'Test1234!',
-         'host': 'localhost',
-         'database': 'jollibee_inventory',
-         'ssl_disabled': True
-     }
-     ```
-   - Update these values if your MySQL setup differs.
+   c.  **Execute the following SQL commands:**
+   
+        
+        -- Create the dedicated user for your application.
+        -- 'mysql_native_password' is often needed for older connectors or simpler setups.
+        CREATE USER IF NOT EXISTS 'test'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Test1234!';
+
+        -- Create the database for your application.
+        CREATE DATABASE IF NOT EXISTS jollibee_inventory;
+
+        -- Grant all necessary privileges to your application user on the new database.
+        GRANT ALL PRIVILEGES ON jollibee_inventory.* TO 'test'@'localhost';
+
+        -- Apply the privilege changes.
+        FLUSH PRIVILEGES;
+
+        -- Exit MySQL
+        EXIT;
+        
+
+**Method B: Using MySQL Workbench (Recommended for Visual Setup - All OS)**
+
+   a.  **Install MySQL Workbench:** Download from the [official MySQL website](https://dev.mysql.com/downloads/workbench/) and install it.
+
+   b.  **Connect to your MySQL Server as an administrative user (e.g., `root`):**
+        1.  Open MySQL Workbench.
+        2.  Click the `+` next to "MySQL Connections".
+        3.  Configure the connection:
+            *   **Connection Name:** `localhost_admin` (or similar)
+            *   **Hostname:** `127.0.0.1` or `localhost`
+            *   **Username:** `root`
+            *   **Password:** Store your MySQL root password in the vault.
+        4.  Test and save the connection. Double-click to open it.
+
+   c.  **Open a new SQL Query Tab and execute the following SQL commands:**
+        
+        -- Create the dedicated user for your application.
+        CREATE USER IF NOT EXISTS 'test'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Test1234!';
+
+        -- Create the database for your application.
+        CREATE DATABASE IF NOT EXISTS jollibee_inventory;
+
+        -- Grant all necessary privileges to your application user on the new database.
+        GRANT ALL PRIVILEGES ON jollibee_inventory.* TO 'test'@'localhost';
+
+        -- Apply the privilege changes.
+        FLUSH PRIVILEGES;
+        
+
+### 2. Create Database Tables
+
+Once the database (`jollibee_inventory`) and user (`test`) are created, you need to create the necessary tables.
+
+   a.  **Connect to the `jollibee_inventory` database:**
+        *   **MySQL Command Line:**
+            ```bash
+            mysql -u test -p jollibee_inventory
+            ```
+            (Enter password `Test1234!`)
+        *   **MySQL Workbench:**
+            1.  You can create a new connection for the `test` user (similar to how you created the `root` connection, but use `test` as username and `jollibee_inventory` as the "Default Schema").
+            2.  Or, in your `root` connection, double-click `jollibee_inventory` in the "SCHEMAS" panel to make it the default, or type `USE jollibee_inventory;` in an SQL tab.
+
+   b.  **Execute the following SQL `CREATE TABLE` statements:**
+        
+        USE jollibee_inventory;
+
+        CREATE TABLE IF NOT EXISTS users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(255) NOT NULL UNIQUE,
+            password VARCHAR(255) NOT NULL,
+            role VARCHAR(50) NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS categories (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL UNIQUE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS products (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            category_id INT,
+            stock INT NOT NULL DEFAULT 0,
+            price DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL ON UPDATE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS activity_log (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT,
+            action VARCHAR(255) NOT NULL,
+            details TEXT,
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+        );
+        
+In MySQL Workbench, you can check the "SCHEMAS" panel. Right-click `jollibee_inventory` and "Refresh All" to see the created tables.
+
+### 3. Application Setup
+
+   a.  **Clone or Download the Repository:**
+        If you have `git` installed:
+        ```bash
+        git clone <repository_url>
+        cd <repository_folder_name>
+        ```
+        Otherwise, download the ZIP and extract it. Navigate into the project folder (e.g., `jollibee-inventory`).
+
+   b.  **Create and Activate a Virtual Environment** (highly recommended):
+        Open your terminal or command prompt in the project directory.
+        ```bash
+        python3 -m venv venv
+        # Or on Windows:
+        # python -m venv venv
+        ```
+        Activate the virtual environment:
+        *   **Linux/macOS:**
+            ```bash
+            source venv/bin/activate
+            ```
+        *   **Windows (CMD):**
+            ```bash
+            venv\Scripts\activate.bat
+            ```
+        *   **Windows (PowerShell):**
+            ```bash
+            venv\Scripts\Activate.ps1
+            ```
+            (If you get an error on PowerShell, you might need to run: `Set-ExecutionPolicy Unrestricted -Scope Process` first, then try activating again.)
+
+   c.  **Install Python Dependencies:**
+        Create a file named `requirements.txt` in your project's root directory with the following content:
+        ```txt
+        Flask
+        mysql-connector-python
+        Werkzeug
+        ```
+        Then, install the dependencies:
+        ```bash
+        pip install -r requirements.txt
+        ```
+
+### 4. Verify Database Configuration in `app.py`
+
+Open the `app.py` file and ensure the `DB_CONFIG` dictionary matches your MySQL setup (it should by default if you followed the steps above):
+```python
+DB_CONFIG = {
+    'user': 'test',
+    'password': 'Test1234!',
+    'host': 'localhost',
+    'database': 'jollibee_inventory',
+    'ssl_disabled': True
+}
+```
+The `ssl_disabled: True` is important if you haven't configured SSL for your MySQL server, which is common for local development.
+
+## Running the Application
+
+1.  Ensure your MySQL server is running.
+2.  Ensure your virtual environment is activated (you should see `(venv)` in your terminal prompt).
+3.  Navigate to the project directory in your terminal.
+4.  Run the Flask application:
+    ```bash
+    python app.py
+    ```
+5.  Open your web browser and go to `http://127.0.0.1:5000/`.
 
 ## Usage
 
-1. **Run the Application**:
-   - Ensure you are in the project directory and the virtual environment is activated.
-   - Execute:
-     ```bash
-     python sf/main.py
-     ```
-
-2. **Login or Sign Up**:
-   - **Sign Up**: Create a new account by providing a username, password, and role (admin or user).
-   - **Login**: Use existing credentials to access the system.
-
-3. **Inventory Management**:
-   - **Dashboard**: View key metrics (total products, categories, low stock, users) and recent products.
-   - **Products**: Add, modify, or remove products; search by name, category, or price range (admin-only for modifications).
-   - **Categories**: Add, edit, or delete product categories (admin-only).
-   - **Users**: Manage user accounts (add, edit, delete; admin-only).
-   - **Reports**: Generate and export reports (e.g., low stock, high stock).
-   - **Activity Log**: Review user actions with timestamps.
-   - **Settings**: Change password, backup/restore database, or switch themes.
-
-## File Structure
-
-The project is now organized into multiple files within the `/sf/` folder for modularity:
-
-- **`sf/main.py`**:
-  - Entry point of the application. Initializes the database and launches the login window.
-- **`sf/login.py`**:
-  - Manages the login interface and redirects to signup if needed.
-- **`sf/signup.py`**:
-  - Handles user registration with role selection.
-- **`sf/inventory.py`**:
-  - Core inventory management interface, including dashboard, products, categories, users, reports, activity log, and settings.
-- **`sf/user_management.py`**:
-  - Provides admin functionality to add, edit, and delete users.
-- **`sf/database.py`**:
-  - Contains database connection logic and table initialization functions.
+1.  **Sign Up**: The first time you access the application, you'll likely need to sign up for an account. You can create an 'admin' or 'user' role.
+    *   For an initial admin account, use "admin" as the role during signup.
+2.  **Login**: Use your registered credentials to log in.
+3.  **Navigate**:
+    *   **Dashboard**: View key metrics and recent products.
+    *   **Products**: View, add, edit, or delete products (admins have full CRUD, users typically have read-only).
+    *   **Categories**: Manage product categories (admin-only).
+    *   **Users**: Manage user accounts (admin-only).
+    *   **Activity Log**: Review user actions.
+    *   **Settings**: Change your password. Admins can also backup the database.
 
 ## Troubleshooting
 
-- **SSL Errors**:
-  - If you encounter SSL-related issues (e.g., `AttributeError: module 'ssl' has no attribute 'wrap_socket'`), ensure your MySQL user uses `mysql_native_password` and that `'ssl_disabled': True` is set in `DB_CONFIG`.
-- **Invalid Credentials**:
-  - Verify that the username and password in `sf/database.py` match your MySQL setup.
-- **PEP 668 Issues**:
-  - On Debian/Ubuntu systems, use a virtual environment to install dependencies due to system-wide Python restrictions.
-- **Database Connection Failed**:
-  - Ensure MySQL Server is running (`sudo systemctl start mysql`) and the database/user exist.
+-   **Database Connection Failed / Access Denied:**
+    *   Ensure MySQL Server is running (`sudo systemctl status mysql` on Linux, check Services on Windows).
+    *   Verify the `user`, `password`, `host`, and `database` in `DB_CONFIG` in `app.py` exactly match the user and database you created in MySQL.
+    *   Ensure the user `test` has privileges on the `jollibee_inventory` database.
+    *   If you changed the `IDENTIFIED WITH` clause for the user, ensure your `mysql-connector-python` version supports it or adjust the user authentication method. `mysql_native_password` is generally safe.
+-   **`No module named 'flask'` (or other modules):**
+    *   Make sure your virtual environment is activated.
+    *   Ensure you've run `pip install -r requirements.txt` within the activated virtual environment.
+-   **SSL Errors (e.g., `SSL connection error: SSL is required but the server doesn't support it`):**
+    *   Ensure `'ssl_disabled': True` is in your `DB_CONFIG` in `app.py` if you are not using SSL with MySQL.
+    *   Alternatively, configure SSL on your MySQL server and adjust client connection parameters (more advanced).
 
 ## Contributing
 
@@ -153,5 +280,4 @@ Contributions are welcome! Please fork the repository and submit pull requests f
 
 ## License
 
-This project is licensed under the [MIT License](https://github.com/Golgrax/jollibee-inventory/blob/main/LICENSE).
-
+This project is typically licensed under an open-source license like MIT. Please include a `LICENSE` file if you have one.
