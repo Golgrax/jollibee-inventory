@@ -1,57 +1,89 @@
 {% extends "base.html" %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
-<h2 class="text-2xl font-bold mb-6">Dashboard</h2>
-<div class="grid grid-cols-4 gap-4 mb-6">
-    <div class="bg-white p-4 rounded-lg shadow border-l-4 border-blue-500">
-        <div class="text-sm text-gray-500">Total Products</div>
-        <div class="text-2xl font-bold">{{ total_products }}</div>
-        <div class="text-sm text-gray-500">Inventory items</div>
+<h2 class="text-3xl font-bold mb-8 text-gray-800">Dashboard Overview</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-blue-500 hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out">
+        <div class="flex items-center justify-between">
+            <div>
+                <div class="text-sm text-gray-500 font-medium">Total Products</div>
+                <div class="text-3xl font-bold text-gray-800">{{ total_products }}</div>
+                <div class="text-sm text-gray-500">Inventory items</div>
+            </div>
+            <i class="fas fa-boxes text-4xl text-blue-500 opacity-70"></i>
+        </div>
     </div>
-    <div class="bg-white p-4 rounded-lg shadow border-l-4 border-green-500">
-        <div class="text-sm text-gray-500">Categories</div>
-        <div class="text-2xl font-bold">{{ total_categories }}</div>
-        <div class="text-sm text-gray-500">Active categories</div>
+    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-green-500 hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out">
+        <div class="flex items-center justify-between">
+            <div>
+                <div class="text-sm text-gray-500 font-medium">Categories</div>
+                <div class="text-3xl font-bold text-gray-800">{{ total_categories }}</div>
+                <div class="text-sm text-gray-500">Active categories</div>
+            </div>
+            <i class="fas fa-sitemap text-4xl text-green-500 opacity-70"></i>
+        </div>
     </div>
-    <div class="bg-white p-4 rounded-lg shadow border-l-4 border-yellow-500">
-        <div class="text-sm text-gray-500">Low Stock</div>
-        <div class="text-2xl font-bold">{{ low_stock }}</div>
-        <div class="text-sm text-red-500">Needs attention</div>
+    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-yellow-500 hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out">
+        <div class="flex items-center justify-between">
+            <div>
+                <div class="text-sm text-gray-500 font-medium">Low Stock</div>
+                <div class="text-3xl font-bold text-yellow-600">{{ low_stock }}</div>
+                <div class="text-sm text-red-500 font-semibold">Needs attention!</div>
+            </div>
+            <i class="fas fa-exclamation-triangle text-4xl text-yellow-500 opacity-70"></i>
+        </div>
     </div>
-    <div class="bg-white p-4 rounded-lg shadow border-l-4 border-purple-500">
-        <div class="text-sm text-gray-500">Total Users</div>
-        <div class="text-2xl font-bold">{{ total_users }}</div>
-        <div class="text-sm text-gray-500">Active system users</div>
+    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-purple-500 hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out">
+        <div class="flex items-center justify-between">
+            <div>
+                <div class="text-sm text-gray-500 font-medium">Total Users</div>
+                <div class="text-3xl font-bold text-gray-800">{{ total_users }}</div>
+                <div class="text-sm text-gray-500">Active system users</div>
+            </div>
+            <i class="fas fa-users text-4xl text-purple-500 opacity-70"></i>
+        </div>
     </div>
 </div>
-<div class="bg-white rounded-lg shadow-md">
-    <div class="p-4 border-b border-gray-200 flex justify-between items-center">
-        <h3 class="font-bold">Recent Products</h3>
-        <a href="{{ url_for('products') }}" class="text-sm text-blue-600">View All</a>
+
+<div class="bg-white rounded-xl shadow-lg">
+    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+        <h3 class="text-xl font-semibold text-gray-700">Recent Products</h3>
+        <a href="{{ url_for('products') }}" class="text-sm text-red-600 hover:text-red-700 font-medium flex items-center transition-colors">
+            View All <i class="fas fa-arrow-right ml-1"></i>
+        </a>
     </div>
     <div class="p-4">
-        <table class="min-w-full">
-            <thead>
-                <tr class="bg-gray-100">
-                    <th class="py-2 px-3 text-left">ID</th>
-                    <th class="py-2 px-3 text-left">Product Name</th>
-                    <th class="py-2 px-3 text-left">Category</th>
-                    <th class="py-2 px-3 text-left">Stock</th>
-                    <th class="py-2 px-3 text-left">Price</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for product in recent_products %}
-                <tr class="border-b border-gray-200">
-                    <td class="py-2 px-3">{{ product[0] }}</td>
-                    <td class="py-2 px-3">{{ product[1] }}</td>
-                    <td class="py-2 px-3">{{ product[2] or 'None' }}</td>
-                    <td class="py-2 px-3">{{ product[3] }}</td>
-                    <td class="py-2 px-3">₱{{ product[4] | round(2) }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="overflow-x-auto">
+            <table class="min-w-full">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="py-3 px-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">ID</th>
+                        <th class="py-3 px-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Product Name</th>
+                        <th class="py-3 px-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Category</th>
+                        <th class="py-3 px-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Stock</th>
+                        <th class="py-3 px-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {% for product in recent_products %}
+                    <tr class="hover:bg-red-50 transition-colors duration-150">
+                        <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-700">{{ product[0] }}</td>
+                        <td class="py-4 px-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ product[1] }}</td>
+                        <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-600">{{ product[2] or 'None' }}</td>
+                        <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-600">{{ product[3] }}</td>
+                        <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-600 font-semibold">₱{{ product[4] | round(2) }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-10 text-gray-500">
+                            <i class="fas fa-box-open text-3xl mb-2"></i><br>No recent products found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -6,46 +6,92 @@
     <title>Jollibee Inventory - {% block title %}{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        /* Custom scrollbar for a cleaner look (optional) */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; /* Light gray track */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c53030; /* Jollibee red-700 */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #e53e3e; /* Jollibee red-600 */
+        }
+
+        /* Sidebar Navigation Item Styling (from your existing code, kept for consistency if used) */
+        .nav-item { /* This class was in your previous "working" example, so I'm keeping it */
+            @apply mb-2 p-3 rounded-lg flex items-center text-gray-700 hover:bg-red-500 hover:text-white hover:shadow-lg transform hover:translate-x-1 transition-all duration-200 ease-in-out;
+        }
+        .nav-item i {
+            @apply mr-3 w-5 text-center text-lg;
+        }
+        .active-nav-item { /* This class was in your previous "working" example */
+            @apply bg-red-600 text-white shadow-md font-semibold;
+        }
+    </style>
 </head>
 <body class="bg-gray-50">
-    <header class="bg-red-600 text-white p-3 flex justify-between items-center">
+    <!-- Header Section Updated -->
+    <header class="bg-red-600 text-white p-3 shadow-lg flex justify-between items-center">
+        <!-- Left Side: Title and Icon -->
         <div class="flex items-center">
-            <i class="fas fa-utensils mr-2"></i>
-            <span class="font-bold">Jollibee Inventory System</span>
+            <i class="fas fa-utensils mr-2 text-2xl"></i>
+            <span class="font-bold text-xl">Jollibee Inventory System</span>
         </div>
-        <div class="flex items-center space-x-4">
-            <i class="fas fa-bell"></i>
-            <a href="{{ url_for('settings') }}"><i class="fas fa-cog"></i></a>
+        <!-- Right Side: Icons and User Info -->
+        <div class="flex items-center space-x-6">
+            <!-- Notification Bell -->
+            <a href="#" class="relative hover:text-yellow-300 transition-colors transform hover:scale-105 duration-150 ease-in-out">
+                <i class="fas fa-bell text-xl"></i>
+                <span class="absolute top-0 right-0 h-2.5 w-2.5 bg-yellow-400 rounded-full border-2 border-red-600 animate-pulse"></span>
+            </a>
+            <!-- Settings Cog -->
+            <a href="{{ url_for('settings') }}" class="hover:text-yellow-300 transition-colors transform hover:scale-105 duration-150 ease-in-out">
+                <i class="fas fa-cog text-xl"></i>
+            </a>
+            <!-- User Profile -->
             <div class="flex items-center">
-                <div class="h-8 w-8 bg-white rounded-full flex items-center justify-center text-red-600">
-                    <i class="fas fa-user"></i>
+                <div class="h-10 w-10 bg-white rounded-full flex items-center justify-center text-red-600 shadow-md">
+                    <i class="fas fa-user text-lg"></i>
                 </div>
-                <span class="ml-2">{{ session.username }}</span>
+                <span class="ml-3 font-medium">{{ session.username }}</span>
             </div>
-            <a href="{{ url_for('logout') }}" class="text-white">Logout</a>
+            <!-- Logout Link -->
+            <a href="{{ url_for('logout') }}" class="flex items-center text-white hover:text-yellow-300 transition-colors transform hover:scale-105 duration-150 ease-in-out">
+                <i class="fas fa-sign-out-alt mr-2 text-xl"></i>
+                <span class="font-medium">Logout</span>
+            </a>
         </div>
     </header>
+    <!-- End of Header Section -->
+
     <div class="flex h-screen">
         <div class="w-1/5 bg-gray-100 border-r border-gray-200">
+            <!-- Sidebar content as you had it -->
             <div class="p-4">
-                <a href="{{ url_for('dashboard') }}" class="mb-2 p-2 bg-red-100 text-red-600 rounded flex items-center">
+                <a href="{{ url_for('dashboard') }}" class="mb-2 p-2 rounded flex items-center {% if request.endpoint == 'dashboard' %}bg-red-100 text-red-600{% else %}hover:bg-gray-200{% endif %}">
                     <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
                 </a>
-                <a href="{{ url_for('products') }}" class="mb-2 p-2 hover:bg-gray-200 rounded flex items-center">
+                <a href="{{ url_for('products') }}" class="mb-2 p-2 hover:bg-gray-200 rounded flex items-center {% if request.endpoint.startswith('products') or request.endpoint.startswith('add_product') or request.endpoint.startswith('edit_product') %}bg-red-100 text-red-600{% else %}hover:bg-gray-200{% endif %}">
                     <i class="fas fa-box mr-2"></i> Products
                 </a>
-                <a href="{{ url_for('categories') }}" class="mb-2 p-2 hover:bg-gray-200 rounded flex items-center">
+                <a href="{{ url_for('categories') }}" class="mb-2 p-2 hover:bg-gray-200 rounded flex items-center {% if request.endpoint.startswith('categories') or request.endpoint.startswith('add_category') %}bg-red-100 text-red-600{% else %}hover:bg-gray-200{% endif %}">
                     <i class="fas fa-tags mr-2"></i> Categories
                 </a>
                 {% if session.role == 'admin' %}
-                <a href="{{ url_for('users') }}" class="mb-2 p-2 hover:bg-gray-200 rounded flex items-center">
+                <a href="{{ url_for('users') }}" class="mb-2 p-2 hover:bg-gray-200 rounded flex items-center {% if request.endpoint.startswith('users') or request.endpoint.startswith('add_user') or request.endpoint.startswith('edit_user') %}bg-red-100 text-red-600{% else %}hover:bg-gray-200{% endif %}">
                     <i class="fas fa-users mr-2"></i> Users
                 </a>
                 {% endif %}
-                <a href="{{ url_for('activity_log') }}" class="mb-2 p-2 hover:bg-gray-200 rounded flex items-center">
+                <a href="{{ url_for('activity_log') }}" class="mb-2 p-2 hover:bg-gray-200 rounded flex items-center {% if request.endpoint == 'activity_log' %}bg-red-100 text-red-600{% else %}hover:bg-gray-200{% endif %}">
                     <i class="fas fa-chart-bar mr-2"></i> Activity Log
                 </a>
-                <a href="{{ url_for('settings') }}" class="mb-2 p-2 hover:bg-gray-200 rounded flex items-center">
+                <a href="{{ url_for('settings') }}" class="mb-2 p-2 hover:bg-gray-200 rounded flex items-center {% if request.endpoint == 'settings' %}bg-red-100 text-red-600{% else %}hover:bg-gray-200{% endif %}">
                     <i class="fas fa-cog mr-2"></i> Settings
                 </a>
             </div>
