@@ -531,5 +531,19 @@ def backup():
     conn.close()
     return redirect(url_for('settings'))
 
+
+
+
+# app name
+@app.errorhandler(404)
+
+# inbuilt function which takes error as parameter
+def not_found(e):
+
+# defining function
+  return render_template("404.html")
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
