@@ -31,7 +31,7 @@
         </div>
         <div>
             <label class="block text-gray-700 text-sm font-semibold mb-1">Max Price</label>
-            <input type="number" name="max_price" value="{{ max_price if max_price > 0 else '' }}" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-shadow" step="0.01" placeholder="e.g., 1000.00">
+            <input type="number" name="max_price" value="{{ max_price if max_price > 10000 else '' }}" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-shadow" step="0.01" placeholder="e.g., 1000.00">
         </div>
         <div class="lg:col-span-1">
             <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-150 ease-in-out flex items-center justify-center">
