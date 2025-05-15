@@ -1,23 +1,42 @@
-{% extends "header.html" %}
+{% raw %}{% extends "base.html" %}
 
 {% block title %}Page Not Found{% endblock %}
 
-{% block body %}
-    <h1>Oops! Looks like the page doesn't exist anymore</h1>
-    <p id="pageInfo">Redirecting to Home Page after 5 seconds...</p>
-    <script>
-        var seconds = 5;
-        var url = "{{ url_for('index') }}";
+{% block content %}
+<div class="flex flex-col items-center justify-center h-full">
+    <div class="text-center">
+        <h1 class="text-6xl font-bold text-red-600 mb-4">404</h1>
+        <h2 class="text-3xl font-semibold text-gray-700 mb-6">Oops! Page Not Found.</h2>
+        <p class="text-gray-500 mb-8">
+            Sorry, the page you are looking for doesn't exist or has been moved.
+        </p>
+        <p id="pageInfo" class="text-gray-500 mb-8">Redirecting to Dashboard after 5 seconds...</p>
+        <a href="{{ url_for('index') }}"
+           class="px-6 py-3 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 transition duration-300">
+            Go to Dashboard
+        </a>
+    </div>
+</div>
 
-        function redirect() {
-            if (seconds <= 0) {
-                window.location = url;
-            } else {
-                seconds--;
-                document.getElementById("pageInfo").innerHTML = "Redirecting to Home Page after " + seconds + " seconds.";
-                setTimeout(redirect, 1000);
-            }
+<script>
+    var seconds = 5;
+    var url = "{{ url_for('index') }}"; // 'index' redirects to 'dashboard' if logged in
+
+    function redirect() {
+        if (seconds <= 0) {
+            window.location = url;
+        } else {
+            seconds--;
+            document.getElementById("pageInfo").innerHTML = "Redirecting to Dashboard after " + seconds + " seconds.";
+            setTimeout(redirect, 1000);
         }
-        window.onload = redirect;
-    </script>
-{% endblock %}
+    }
+    // Ensure the DOM is loaded before trying to getElementById
+    document.addEventListener('DOMContentLoaded', (event) => {
+        // Check if the element exists before starting the redirect countdown
+        if (document.getElementById("pageInfo")) {
+            redirect();
+        }
+    });
+</script>
+{% endblock %}{% endraw %}
