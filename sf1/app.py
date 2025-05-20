@@ -12,11 +12,8 @@ DB_CONFIG = {
     'password': 'Test1234!',
     'host': 'localhost',
     'database': 'jollibee_inventory',
-    'ssl_disabled': True,
-    'allow_public_key_retrieval': True
+    'ssl_disabled': True
 }
-
-
 
 @app.route('/')
 def index():
