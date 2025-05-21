@@ -64,16 +64,16 @@ You might need to run `sudo mysql_secure_installation` for initial setup.
 
    b.  **Connect to MySQL as an administrative user (e.g., root):**
         *   **Linux/macOS:**
-            ```bash
-            sudo mysql
-            # Or if you have a root password set:
-            # mysql -u root -p
-            ```
-        *   **Windows:** Open the MySQL Command Line Client or PowerShell/CMD and type:
-            ```bash
-            mysql -u root -p
-            ```
-            (Enter your MySQL root password when prompted).
+  ```bash
+  sudo mysql
+  # Or if you have a root password set:
+  # mysql -u root -p
+  ```
+  *   **Windows:** Open the MySQL Command Line Client or PowerShell/CMD and type:
+```bash
+mysql -u root -p
+```
+  (Enter your MySQL root password when prompted).
 
    c.  **Execute the following SQL commands:**
    
@@ -187,45 +187,45 @@ In MySQL Workbench, you can check the "SCHEMAS" panel. Right-click `jollibee_inv
 
    a.  **Clone or Download the Repository:**
         If you have `git` installed:
-        ```bash
-        git clone https://github.com/Golgrax/jollibee-inventory.git
-        cd jollibee-inventory
-        ```
-        Otherwise, download the ZIP from `https://github.com/Golgrax/jollibee-inventory/archive/refs/heads/main.zip` (or your desired branch) and extract it. Navigate into the project folder (e.g., `jollibee-inventory` or `jollibee-inventory-main`).
+  ```bash
+git clone https://github.com/Golgrax/jollibee-inventory.git
+cd jollibee-inventory
+  ```
+Otherwise, download the ZIP from `https://github.com/Golgrax/jollibee-inventory/archive/refs/heads/main.zip` (or your desired branch) and extract it. Navigate into the project folder (e.g., `jollibee-inventory` or `jollibee-inventory-main`).
 
    b.  **Create and Activate a Virtual Environment** (highly recommended):
         Open your terminal or command prompt in the project directory.
-        ```bash
-        python3 -m venv venv
-        # Or on Windows:
-        # python -m venv venv
-        ```
-        Activate the virtual environment:
-        *   **Linux/macOS:**
-            ```bash
-            source venv/bin/activate
-            ```
-        *   **Windows (CMD):**
-            ```bash
-            venv\Scripts\activate.bat
-            ```
-        *   **Windows (PowerShell):**
-            ```bash
-            venv\Scripts\Activate.ps1
-            ```
-            (If you get an error on PowerShell, you might need to run: `Set-ExecutionPolicy Unrestricted -Scope Process` first, then try activating again.)
+  ```bash
+  python3 -m venv venv
+  # Or on Windows:
+  # python -m venv venv
+  ```
+  Activate the virtual environment:
+  *   **Linux/macOS:**
+  ```bash
+  source venv/bin/activate
+  ```
+  *   **Windows (CMD):**
+  ```bash
+    venv\Scripts\activate.bat
+  ```
+  *   **Windows (PowerShell):**
+  ```bash
+  venv\Scripts\Activate.ps1
+  ```
+  (If you get an error on PowerShell, you might need to run: `Set-ExecutionPolicy Unrestricted -Scope Process` first, then try activating again.)
 
    c.  **Install Python Dependencies:**
         Ensure you have a file named `requirements.txt` in your project's root directory with the following content:
-        ```txt
-        Flask
-        mysql-connector-python
-        Werkzeug
-        ```
-        Then, install the dependencies (make sure your virtual environment is activated):
-        ```bash
-        pip install -r requirements.txt
-        ```
+  ```txt
+  Flask
+  mysql-connector-python
+  Werkzeug
+  ```
+  Then, install the dependencies (make sure your virtual environment is activated):
+  ```bash
+  pip install -r requirements.txt
+  ```
 
 ### 4. Verify Database Configuration in `app.py`
 
