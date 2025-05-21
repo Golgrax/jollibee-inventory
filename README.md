@@ -52,13 +52,13 @@ Your Flask application needs a dedicated MySQL database and user. You can set th
 
    a.  **Install MySQL Server:**
         *   **Linux (Debian/Ubuntu):**
-            ```bash
-            sudo apt update
-            sudo apt install mysql-server
-            sudo systemctl start mysql
-            sudo systemctl enable mysql
-            ```
-            You might need to run `sudo mysql_secure_installation` for initial setup.
+  ```bash
+sudo apt update
+sudo apt install mysql-server
+sudo systemctl start mysql
+sudo systemctl enable mysql
+  ```    
+You might need to run `sudo mysql_secure_installation` for initial setup.
         *   **Windows:** Download the MySQL Installer from the [official MySQL website](https://dev.mysql.com/downloads/installer/) and follow the installation instructions. Ensure the MySQL Server is added to your system's PATH or use the MySQL Command Line Client installed with it.
         *   **macOS:** You can use Homebrew: `brew install mysql` and `brew services start mysql`.
 
