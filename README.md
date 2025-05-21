@@ -30,7 +30,7 @@ This is a web-based inventory management system designed for Jollibee, built wit
 
 - **Python 3.7+**
 - **Git** (for cloning the repository)
-- **MySQL Server** (Version 5.7+ or 8.0+ recommended)
+- **MySQL Server** (Version 8.0+ recommended for compatibility with default authentication plugins; 5.7+ may also work but might require `mysql_native_password`)
 - **MySQL Workbench** (Recommended for easier database management, but optional)
 - A Web Browser
 
@@ -79,8 +79,11 @@ Your Flask application needs a dedicated MySQL database and user. You can set th
    
         
         -- Create the dedicated user for your application.
-        -- 'mysql_native_password' is often needed for older connectors or simpler setups.
-        CREATE USER IF NOT EXISTS 'test'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Test1234!';
+        -- For modern MySQL versions (8.0+), the server's default authentication plugin 
+        -- (often 'caching_sha2_password') is preferred and typically doesn't require 
+        -- specifying 'IDENTIFIED WITH mysql_native_password'.
+        -- If you encounter "Plugin 'mysql_native_password' is not loaded", using the command below is correct.
+        CREATE USER IF NOT EXISTS 'test'@'localhost' IDENTIFIED BY 'Test1234!';
 
         -- Create the database for your application.
         CREATE DATABASE IF NOT EXISTS jollibee_inventory;
@@ -112,7 +115,9 @@ Your Flask application needs a dedicated MySQL database and user. You can set th
    c.  **Open a new SQL Query Tab and execute the following SQL commands:**
         
         -- Create the dedicated user for your application.
-        CREATE USER IF NOT EXISTS 'test'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Test1234!';
+        -- For modern MySQL versions (8.0+), the server's default authentication plugin 
+        -- (often 'caching_sha2_password') is preferred.
+        CREATE USER IF NOT EXISTS 'test'@'localhost' IDENTIFIED BY 'Test1234!';
 
         -- Create the database for your application.
         CREATE DATABASE IF NOT EXISTS jollibee_inventory;
@@ -183,10 +188,10 @@ In MySQL Workbench, you can check the "SCHEMAS" panel. Right-click `jollibee_inv
    a.  **Clone or Download the Repository:**
         If you have `git` installed:
         ```bash
-        git clone <repository_url>
-        cd <repository_folder_name>
+        git clone https://github.com/Golgrax/jollibee-inventory.git
+        cd jollibee-inventory
         ```
-        Otherwise, download the ZIP and extract it. Navigate into the project folder (e.g., `jollibee-inventory`).
+        Otherwise, download the ZIP from `https://github.com/Golgrax/jollibee-inventory/archive/refs/heads/main.zip` (or your desired branch) and extract it. Navigate into the project folder (e.g., `jollibee-inventory` or `jollibee-inventory-main`).
 
    b.  **Create and Activate a Virtual Environment** (highly recommended):
         Open your terminal or command prompt in the project directory.
@@ -211,13 +216,13 @@ In MySQL Workbench, you can check the "SCHEMAS" panel. Right-click `jollibee_inv
             (If you get an error on PowerShell, you might need to run: `Set-ExecutionPolicy Unrestricted -Scope Process` first, then try activating again.)
 
    c.  **Install Python Dependencies:**
-        Create a file named `requirements.txt` in your project's root directory with the following content:
+        Ensure you have a file named `requirements.txt` in your project's root directory with the following content:
         ```txt
         Flask
         mysql-connector-python
         Werkzeug
         ```
-        Then, install the dependencies:
+        Then, install the dependencies (make sure your virtual environment is activated):
         ```bash
         pip install -r requirements.txt
         ```
@@ -244,6 +249,7 @@ The `ssl_disabled: True` is important if you haven't configured SSL for your MyS
 4.  Run the Flask application:
     ```bash
     python app.py
+    # Or python3 app.py if 'python' on your system defaults to Python 2
     ```
 5.  Open your web browser and go to `http://127.0.0.1:5000/`.
 
@@ -262,22 +268,25 @@ The `ssl_disabled: True` is important if you haven't configured SSL for your MyS
 
 ## Troubleshooting
 
--   **Database Connection Failed / Access Denied:**
+-   **Database Connection Failed / Access Denied / Authentication Plugin Issues:**
     *   Ensure MySQL Server is running (`sudo systemctl status mysql` on Linux, check Services on Windows).
     *   Verify the `user`, `password`, `host`, and `database` in `DB_CONFIG` in `app.py` exactly match the user and database you created in MySQL.
-    *   Ensure the user `test` has privileges on the `jollibee_inventory` database.
-    *   If you changed the `IDENTIFIED WITH` clause for the user, ensure your `mysql-connector-python` version supports it or adjust the user authentication method. `mysql_native_password` is generally safe.
+    *   Ensure the user `test` has privileges on the `jollibee_inventory` database (`GRANT ALL PRIVILEGES ON jollibee_inventory.* TO 'test'@'localhost';` followed by `FLUSH PRIVILEGES;`).
+    *   **Authentication Plugin:**
+        *   Modern MySQL versions (8.0+) often default to the `caching_sha2_password` authentication plugin. Older versions might have used `mysql_native_password`.
+        *   If you encounter errors like `Plugin 'mysql_native_password' is not loaded` when trying to create the user with `IDENTIFIED WITH mysql_native_password BY ...`, simply use `IDENTIFIED BY ...` (as shown in the updated setup steps). This lets MySQL use its default plugin.
+        *   The `mysql-connector-python` library used by this Flask application generally supports `caching_sha2_password` without any special configuration in `DB_CONFIG`.
+        *   If you *must* use `mysql_native_password` (e.g., for compatibility with very old tools) and it's not enabled, you would need to configure your MySQL server to load it. This usually involves editing the MySQL configuration file (e.g., `my.cnf` or `mysqld.cnf`) to add `default_authentication_plugin=mysql_native_password` under the `[mysqld]` section and restarting the MySQL server. However, for this project, using the server's default is recommended.
 -   **`No module named 'flask'` (or other modules):**
-    *   Make sure your virtual environment is activated.
-    *   Ensure you've run `pip install -r requirements.txt` within the activated virtual environment.
+    *   Make sure your virtual environment is activated. You should see `(venv)` at the beginning of your terminal prompt.
+    *   Ensure you've run `pip install -r requirements.txt` *within* the activated virtual environment.
 -   **SSL Errors (e.g., `SSL connection error: SSL is required but the server doesn't support it`):**
-    *   Ensure `'ssl_disabled': True` is in your `DB_CONFIG` in `app.py` if you are not using SSL with MySQL.
+    *   Ensure `'ssl_disabled': True` is in your `DB_CONFIG` in `app.py` if you are not using SSL with MySQL for local development.
     *   Alternatively, configure SSL on your MySQL server and adjust client connection parameters (more advanced).
 
 ## Contributing
 
 Contributions are welcome! Please fork the repository and submit pull requests for enhancements or bug fixes.
-
 
 ## License
 
