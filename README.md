@@ -59,8 +59,12 @@ sudo systemctl start mysql
 sudo systemctl enable mysql
   ```    
 You might need to run `sudo mysql_secure_installation` for initial setup.
-        *   **Windows:** Download the MySQL Installer from the [official MySQL website](https://dev.mysql.com/downloads/installer/) and follow the installation instructions. Ensure the MySQL Server is added to your system's PATH or use the MySQL Command Line Client installed with it.
-        *   **macOS:** You can use Homebrew: `brew install mysql` and `brew services start mysql`.
+</br>
+
+**Windows:** Download the MySQL Installer from the [official MySQL website](https://dev.mysql.com/downloads/installer/) and follow the installation instructions. Ensure the MySQL Server is added to your system's PATH or use the MySQL Command Line Client installed with it.
+</br>
+
+**macOS:** You can use Homebrew: `brew install mysql` and `brew services start mysql`.
 
    b.  **Connect to MySQL as an administrative user (e.g., root):**
         *   **Linux/macOS:**
@@ -103,14 +107,19 @@ mysql -u root -p
    a.  **Install MySQL Workbench:** Download from the [official MySQL website](https://dev.mysql.com/downloads/workbench/) and install it.
 
    b.  **Connect to your MySQL Server as an administrative user (e.g., `root`):**
-        1.  Open MySQL Workbench.
-        2.  Click the `+` next to "MySQL Connections".
-        3.  Configure the connection:
-            *   **Connection Name:** `localhost_admin` (or similar)
-            *   **Hostname:** `127.0.0.1` or `localhost`
-            *   **Username:** `root`
-            *   **Password:** Store your MySQL root password in the vault.
-        4.  Test and save the connection. Double-click to open it.
+   
+1.  Open MySQL Workbench.
+2.  Click the `+` next to "MySQL Connections".
+3.  Configure the connection:
+**Connection Name:** `localhost_admin` (or similar)
+
+**Hostname:** `127.0.0.1` or `localhost`
+
+**Username:** `root`
+
+**Password:** Store your MySQL root password in the vault.
+
+5.  Test and save the connection. Double-click to open it.
 
    c.  **Open a new SQL Query Tab and execute the following SQL commands:**
         
