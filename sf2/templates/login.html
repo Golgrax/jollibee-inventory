@@ -1,0 +1,54 @@
+{% extends "base_auth.html" %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="bg-white p-8 md:p-10 rounded-xl shadow-2xl w-full transform transition-all duration-500 ease-in-out hover:shadow-3xl">
+    {# GSAP could animate the entrance of this card #}
+    <div class="text-center mb-8">
+        {# Consider a LottieFile animation here #}
+        <i class="fas fa-utensils text-6xl text-red-600 animate-bounce"></i> {# Added a subtle animation #}
+        <h1 class="text-4xl font-bold text-gray-800 mt-4">Jollibee Inventory</h1>
+        <p class="text-gray-600 mt-2 text-lg">Welcome back! Please login to continue.</p>
+    </div>
+
+    <form method="POST" class="space-y-6">
+        <div class="floating-label-group">
+            <input type="text" name="username" id="username"
+                   class="floating-input w-full px-4 py-3 border border-gray-300 rounded-lg
+                          focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent
+                          transition-shadow duration-200 ease-in-out placeholder-transparent"
+                   required placeholder="Username">
+            <label for="username" class="floating-label">Username</label>
+            <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                <i class="fas fa-user text-gray-400"></i>
+            </div>
+        </div>
+
+        <div class="floating-label-group">
+            <input type="password" name="password" id="password"
+                   class="floating-input w-full px-4 py-3 border border-gray-300 rounded-lg
+                          focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent
+                          transition-shadow duration-200 ease-in-out placeholder-transparent"
+                   required placeholder="Password">
+            <label for="password" class="floating-label">Password</label>
+            <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                <i class="fas fa-lock text-gray-400"></i>
+            </div>
+        </div>
+        
+        <div class="flex items-center justify-between mt-8">
+            <a href="{{ url_for('signup') }}"
+               class="font-medium text-sm text-red-600 hover:text-red-700 hover:underline
+                      transition-colors duration-200 ease-in-out">
+                Don't have an account? Sign Up
+            </a>
+            <button type="submit"
+                    class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg
+                           focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50
+                           transform hover:scale-105 transition-all duration-200 ease-in-out shadow-md hover:shadow-lg">
+                <i class="fas fa-sign-in-alt mr-2"></i> Login
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

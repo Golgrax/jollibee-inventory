@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Categories{% endblock %}
+{% block content %}
+<h2 class="text-2xl font-bold mb-6">Categories</h2>
+<div class="bg-white rounded-lg shadow-md">
+    <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+        <h3 class="font-bold">Category List</h3>
+        {% if is_admin %}
+        <a href="{{ url_for('add_category') }}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Add Category</a>
+        {% endif %}
+    </div>
+    <div class="p-4 overflow-x-auto"> {# Added overflow-x-auto for responsiveness #}
+        <table class="min-w-full">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="py-2 px-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                    <th class="py-2 px-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                    {% if is_admin %}
+                    <th class="py-2 px-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% if categories %}
+                    {% for category in categories %}
+                    <tr>
+                        <td class="py-2 px-3 whitespace-nowrap">{{ category[0] }}</td>
+                        <td class="py-2 px-3 whitespace-nowrap">{{ category[1] }}</td>
+                        {% if is_admin %}
+                        <td class="py-2 px-3 whitespace-nowrap">
+                            <a href="{{ url_for('delete_category', id=category[0]) }}"
+                               class="text-red-600 hover:text-red-800 font-medium"
+                               onclick="return confirm('Are you sure you want to delete the category \'{{ category[1] }}\'? Products in this category will become uncategorized.');">
+                               Delete
+                            </a>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="{{ 3 if is_admin else 2 }}" class="py-4 px-3 text-center text-gray-500">No categories found.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
