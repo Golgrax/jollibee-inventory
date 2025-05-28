@@ -267,12 +267,12 @@ def add_product():
 @app.route('/products/edit/<int:id>', methods=['GET', 'POST'])
 @admin_required # Using admin_required decorator
 def edit_product(id):
-    # No need for manual role check
     conn = connect_db()
     if conn is None:
         flash("Database connection failed.", "error")
         return render_template('edit_product.html', product=None, categories=[])
-    cursor = conn.cursor(dictionary=True) # Use dictionary cursor for easier access
+
+    cursor = conn.cursor(dictionary=True)
 
     if request.method == 'POST':
         name = request.form['name']
@@ -288,7 +288,7 @@ def edit_product(id):
             cursor.execute("SELECT id, name, category_id, stock, price FROM products WHERE id=%s", (id,))
             product = cursor.fetchone()
             cursor.execute("SELECT id, name FROM categories")
-            categories_list = cursor.fetchall() # Fetch as list of dicts
+            categories_list = cursor.fetchall()
             cursor.close()
             conn.close()
             return render_template('edit_product.html', product=product, categories=categories_list)
@@ -303,11 +303,15 @@ def edit_product(id):
             return redirect(url_for('products'))
         except mysql.connector.Error as e:
             flash(f"Error updating product: {e}", "error")
+            # --- ADDED RETURN STATEMENT HERE ---
+            # Refetch product and categories to re-render the form
+            cursor.execute("SELECT id, name, category_id, stock, price FROM products WHERE id=%s", (id,))
+            product = cursor.fetchone()
+            cursor.execute("SELECT id, name FROM categories")
+            categories_list = cursor.fetchall()
+            return render_template('edit_product.html', product=product, categories=categories_list)
         finally:
-            # cursor.close() # cursor might be closed if ValueError happened
-            # conn.close() # conn might be closed if ValueError happened
-            # Ensure closure if not already closed
-            if cursor and not cursor.is_closed():
+            if cursor:
                 cursor.close()
             if conn and conn.is_connected():
                 conn.close()
@@ -315,7 +319,7 @@ def edit_product(id):
         cursor.execute("SELECT id, name, category_id, stock, price FROM products WHERE id=%s", (id,))
         product = cursor.fetchone()
         cursor.execute("SELECT id, name FROM categories")
-        categories_list = cursor.fetchall() # Fetch as list of dicts
+        categories_list = cursor.fetchall()
         cursor.close()
         conn.close()
         if not product:
@@ -489,12 +493,11 @@ def edit_user(id):
         flash("Database connection failed.", "error")
         return render_template('edit_user.html', user=None)
 
-    # Use dictionary=True for easier access in template if needed, though user is tuple here
     cursor = conn.cursor()
 
     if request.method == 'POST':
         username = request.form['username']
-        password = request.form['password'] # Optional: only update if provided
+        password = request.form['password']
         role = request.form['role']
 
         try:
@@ -512,17 +515,17 @@ def edit_user(id):
             conn.commit()
             log_activity(session['user_id'], "Edit User", f"Edited user ID: {id}, Username: {username}")
             flash("User updated successfully!", "success")
+
+            if id == session.get('user_id'):
+                session['role'] = role
             return redirect(url_for('users'))
         except mysql.connector.Error as e:
             flash(f"Error updating user: {e}", "error")
-            # If error, need to refetch user data for the form
             cursor.execute("SELECT id, username, role FROM users WHERE id=%s", (id,))
             user_data = cursor.fetchone()
-            cursor.close()
-            conn.close()
             return render_template('edit_user.html', user=user_data)
         finally:
-            if cursor and not cursor.is_closed():
+            if cursor:
                 cursor.close()
             if conn and conn.is_connected():
                 conn.close()
@@ -615,7 +618,7 @@ def settings():
             cursor.execute("SELECT password FROM users WHERE id=%s", (session['user_id'],))
             current_hash_record = cursor.fetchone()
             if not current_hash_record:
-                flash("User not found.", "error") # Should not happen if logged in
+                flash("User not found.", "error") 
                 return redirect(url_for('login'))
 
             current_hash = current_hash_record[0]
@@ -635,17 +638,17 @@ def settings():
         finally:
             cursor.close()
             conn.close()
-        return redirect(url_for('settings')) # Redirect to clear form or show success
+        return redirect(url_for('settings')) 
 
     return render_template('settings.html')
 
 @app.route('/backup')
-@admin_required # Changed to admin_required as this is a sensitive operation
+@admin_required 
 def backup():
     conn = connect_db()
     if conn is None:
         flash("Database connection failed.", "error")
-        return redirect(url_for('settings')) # Or dashboard
+        return redirect(url_for('settings')) 
 
     cursor = conn.cursor()
     try:
@@ -653,18 +656,16 @@ def backup():
         tables = [row[0] for row in cursor.fetchall()]
         backup_data = {}
         for table in tables:
-            cursor.execute(f"SELECT * FROM {table}") # Use f-string carefully, table names from SHOW TABLES are safe
+            cursor.execute(f"SELECT * FROM {table}") 
 
-            # Fetch column names for context if needed, though json.dump handles tuples fine
             column_names = [desc[0] for desc in cursor.description]
             rows = cursor.fetchall()
 
-            # Store data as list of dictionaries for better readability in JSON
             backup_data[table] = [dict(zip(column_names, row)) for row in rows]
 
         backup_filename = "inventory_backup.json"
         with open(backup_filename, "w") as f:
-            json.dump(backup_data, f, indent=4, default=str) # default=str for datetime etc.
+            json.dump(backup_data, f, indent=4, default=str) 
 
         log_activity(session['user_id'], "Database Backup", f"Database backed up to {backup_filename}")
         flash(f"Database backed up to '{backup_filename}'.", "success")
@@ -675,14 +676,12 @@ def backup():
     finally:
         cursor.close()
         conn.close()
-    return redirect(url_for('settings')) # Or dashboard
+    return redirect(url_for('settings')) 
 
 
-# app name
+
 @app.errorhandler(404)
-# inbuilt function which takes error as parameter
 def not_found(e):
-# defining function
   return render_template("404.html"), 404
 
 

@@ -5,25 +5,28 @@
 <form method="POST" class="max-w-md">
     <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2">Name</label>
-        <input type="text" name="name" value="{{ product[1] }}" class="w-full p-2 border border-gray-300 rounded" required>
+        <input type="text" name="name" value="{{ product.name }}" class="w-full p-2 border border-gray-300 rounded" required>
     </div>
     <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2">Category</label>
         <select name="category" class="w-full p-2 border border-gray-300 rounded">
-            <option value="None" {% if not product[2] %}selected{% endif %}>None</option>
+            <option value="None" {% if product.category_id is none %}selected{% endif %}>None</option>
             {% for cat in categories %}
-            <option value="{{ cat[0] }}" {% if product[2] == cat[0] %}selected{% endif %}>{{ cat[1] }}</option>
+            <option value="{{ cat.id }}" {% if product.category_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
             {% endfor %}
         </select>
     </div>
     <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2">Stock</label>
-        <input type="number" name="stock" value="{{ product[3] }}" class="w-full p-2 border border-gray-300 rounded" required>
+        <input type="number" name="stock" value="{{ product.stock }}" class="w-full p-2 border border-gray-300 rounded" required>
     </div>
     <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2">Price</label>
-        <input type="number" name="price" value="{{ product[4] }}" class="w-full p-2 border border-gray-300 rounded" step="0.01" required>
+        <input type="text" name="price" value="{{ product.price }}" class="w-full p-2 border border-gray-300 rounded" required>
     </div>
-    <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Update Product</button>
+    <div class="flex items-center justify-between">
+        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Update Product</button>
+        <a href="{{ url_for('products') }}" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">Cancel</a>
+    </div>
 </form>
 {% endblock %}
