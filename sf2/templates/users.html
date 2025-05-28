@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Users{% endblock %}
+{% block content %}
+<h2 class="text-2xl font-bold mb-6">Users</h2>
+<div class="bg-white rounded-lg shadow-md">
+    <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+        <h3 class="font-bold">User List</h3>
+        <a href="{{ url_for('add_user') }}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Add User</a>
+    </div>
+    <div class="p-4">
+        <table class="min-w-full">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="py-2 px-3 text-left">ID</th>
+                    <th class="py-2 px-3 text-left">Username</th>
+                    <th class="py-2 px-3 text-left">Role</th>
+                    <th class="py-2 px-3 text-left">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr class="border-b border-gray-200">
+                    <td class="py-2 px-3">{{ user[0] }}</td>
+                    <td class="py-2 px-3">{{ user[1] }}</td>
+                    <td class="py-2 px-3">{{ user[2] }}</td>
+                    <td class="py-2 px-3">
+                        <a href="{{ url_for('edit_user', id=user[0]) }}" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></a>
+                        <a href="{{ url_for('delete_user', id=user[0]) }}" class="text-red-600" onclick="return confirm('Are you sure?')"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

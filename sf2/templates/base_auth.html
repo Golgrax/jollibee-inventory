@@ -9,33 +9,53 @@
     {# <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&display=swap" rel="stylesheet"> #}
     <style>
         /* body { font-family: 'Figtree', sans-serif; } */
-        /* Animated gradient background */
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
         .animated-gradient {
-            background: linear-gradient(-45deg, #fff3e0, #ffd180, #ffcc80, #ffb74d); /* Softer Jollibee-esque tones */
+            background: linear-gradient(-45deg, #fff3e0, #ffd180, #ffcc80, #ffb74d);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
         }
-        /* For potential floating labels (requires Alpine.js) */
-        .floating-label-group { @apply relative; }
+
+        /* REWRITTEN Floating Label Styling */
+        .floating-label-group {
+            position: relative;
+        }
         .floating-label {
-            @apply absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none
-                   transition-all duration-200 ease-in-out px-1 text-sm;
+            position: absolute;
+            left: 0.75rem; /* Equivalent to left-3 */
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6B7280; /* text-gray-500 */
+            pointer-events: none;
+            transition-property: all; /* transition-all */
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); /* ease-in-out */
+            transition-duration: 200ms; /* duration-200 */
+            padding-left: 0.25rem; /* px-1 */
+            padding-right: 0.25rem; /* px-1 */
+            font-size: 0.875rem; /* text-sm */
         }
         .floating-input:focus ~ .floating-label,
         .floating-input:not(:placeholder-shown) ~ .floating-label {
-            @apply top-0 text-xs bg-white 
-                   text-red-600 font-medium -translate-y-1/2;
+            top: 0; /* Moves label to the top border */
+            font-size: 0.75rem; /* text-xs */
+            background-color: #ffffff; /* bg-white (ensure this matches the form card's background) */
+            color: #DC2626; /* text-red-600 */
+            font-weight: 500; /* font-medium */
+            transform: translateY(-50%); /* Vertically centers the label on the top border */
         }
+        /* Ensure inputs have enough top padding for the label text when it floats up */
+        /* This can be added to specific inputs or a general class if needed */
+        /* Example: .floating-input { padding-top: 1.25rem; } */
+
     </style>
-    {# <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script> #}
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    {# <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script> #} {# GSAP likely not needed for auth pages #}
 </head>
 <body class="animated-gradient flex items-center justify-center min-h-screen p-4 text-gray-800">
-    {# GSAP could be used for entrance animation of the card #}
     <div class="w-full max-w-md">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -61,7 +81,7 @@
         {% endif %}
         {% endwith %}
 
-        {% block content %}{% endblock %} {# Auth form content injected here #}
+        {% block content %}{% endblock %}
 
         <p class="mt-8 text-center text-sm text-gray-700">
             © {{ current_year }} Jollibee Inventory System. All rights reserved.
